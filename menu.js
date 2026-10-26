@@ -52,7 +52,6 @@ function h(tag, cls, text) {
   if (text != null) e.textContent = text;
   return e;
 }
-function strip() { return h("div", "dancers"); }
 function item(i) {
   const d = h("div", "item"), r = h("div", "row");
   r.append(h("span", "name", i.n));
@@ -71,14 +70,15 @@ function section(s) {
 const root = document.getElementById("menu");
 PAGES.forEach(p => {
   const pg = h("article", "page");
-  pg.append(strip());
   if (p.head) {
     const hd = h("header", "head");
-    hd.append(h("span", "brand", "The Café B-Hive"), h("span", "title", "Menu"));
+    const lc = h("div", "logo-crop"), im = h("img");
+    im.src = "img/bhive_logo.jpeg"; im.alt = "Bhive"; lc.append(im);
+    hd.append(lc, h("span", "title", "MENU"));
     pg.append(hd);
   }
   const cols = h("div", "cols");
   p.cols.forEach(c => { const col = h("div"); c.forEach(s => col.append(section(s))); cols.append(col); });
-  pg.append(cols, strip());
+  pg.append(cols, h("p", "foot", "Prices in Kwacha (K) • Bhive"));
   root.append(pg);
 });
