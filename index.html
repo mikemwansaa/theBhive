@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bhive</title>
+<meta name="description" content="Bhive - Menu">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>
+// Always open on the landing screen (ignore remembered scroll position and #menu in the URL)
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+if(location.hash)history.replaceState(null,'',location.pathname+location.search);
+</script>
+</head>
+<body>
+<section id="intro">
+<video id="v" autoplay muted playsinline webkit-playsinline preload="auto" poster="img/poster.jpg" src="video/bhive.mp4"></video>
+<button id="play" type="button" aria-label="Play intro">&#9654;</button>
+<div class="stack">
+<img id="logo" src="img/bhive_logo.jpeg" alt="Bhive - click to replay intro" title="Replay">
+<a class="go" href="#menu">View the menu</a>
+</div>
+</section>
+<main id="menu"></main>
+<script src="menu.js"></script>
+<script>
+const top0=()=>scrollTo(0,0);
+top0();
+addEventListener('load',top0);
+addEventListener('pageshow',top0);
+document.querySelector('.go').addEventListener('click',e=>{e.preventDefault();document.getElementById('menu').scrollIntoView({behavior:'smooth'})});
+const intro=document.getElementById('intro'),v=document.getElementById('v'),playBtn=document.getElementById('play');
+const done=()=>{intro.classList.add('done');playBtn.classList.remove('show')};
+v.muted=true;v.defaultMuted=true;
+function start(){
+  const p=v.play();
+  if(p&&p.catch)p.catch(()=>{});
+}
+v.addEventListener('playing',()=>playBtn.classList.remove('show'));
+v.addEventListener('ended',done);
+v.addEventListener('error',done);
+v.addEventListener('timeupdate',()=>{if(v.duration&&v.currentTime>v.duration-0.35)done()});
+v.addEventListener('loadeddata',start);
+v.addEventListener('canplay',start);
+start();
+// If the browser blocks autoplay, keep the video on screen and start it on the first tap, click, key or scroll
+['pointerdown','touchstart','keydown','wheel','scroll'].forEach(e=>addEventListener(e,()=>{
+  if(v.paused&&!intro.classList.contains('done')&&v.currentTime===0)start();
+},{passive:true}));
+setTimeout(()=>{if(v.paused&&!intro.classList.contains('done'))playBtn.classList.add('show')},1200);
+playBtn.onclick=start;
+document.getElementById('logo').onclick=()=>{intro.classList.remove('done');v.muted=true;v.currentTime=0;start()};
+</script>
+</body>
+</html>
